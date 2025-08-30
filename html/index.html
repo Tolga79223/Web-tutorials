@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostAim666 - Redstone Tutorials</title>
+    <style>
+        /* Body & animated grid background */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #eee;
+            position: relative;
+            z-index: 0;
+            background: #0d0d0d;
+            background-image: linear-gradient(90deg, rgba(255, 0, 0, 0.05) 1px, transparent 1px), linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: bgMove 10s linear infinite;
+        }
+        
+        @keyframes bgMove {
+            from {
+                background-position: 0 0, 0 0;
+            }
+            to {
+                background-position: 50px 50px, 50px 50px;
+            }
+        }
+        /* Glowing corners */
+        
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            border: 3px solid transparent;
+            pointer-events: none;
+            z-index: 1;
+            animation: glowMove 6s linear infinite alternate;
+        }
+        
+        body::before {
+            top: 10px;
+            left: 10px;
+            border-top-color: #ff0000;
+            border-left-color: #ff0000;
+            filter: drop-shadow(0 0 10px #ff3333);
+        }
+        
+        body::after {
+            bottom: 10px;
+            right: 10px;
+            border-bottom-color: #ff0000;
+            border-right-color: #ff0000;
+            filter: drop-shadow(0 0 10px #ff3333);
+        }
+        
+        @keyframes glowMove {
+            0% {
+                filter: drop-shadow(0 0 5px #ff3333);
+            }
+            25% {
+                filter: drop-shadow(0 0 10px #ff6600);
+            }
+            50% {
+                filter: drop-shadow(0 0 15px #ff0000);
+            }
+            75% {
+                filter: drop-shadow(0 0 10px #ff3300);
+            }
+            100% {
+                filter: drop-shadow(0 0 5px #ff0000);
+            }
+        }
+        /* Header */
+        
+        header {
+            text-align: center;
+            padding: 2rem;
+            background: #1a1a1a;
+            border-bottom: 2px solid #b30000;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header h1 {
+            color: #ff3333;
+            text-shadow: 0 0 8px #ff0000;
+        }
+        
+        .kofi-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 0.5rem 1rem;
+            background: #ff3333;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid #b30000;
+            transition: 0.3s;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+        }
+        
+        .kofi-btn:hover {
+            background: #660000;
+            border-color: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+        /* Grid layout */
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        /* Cards */
+        
+        .card {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #660000;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+        
+        .card:hover {
+            background: #330000;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px #ff0000;
+        }
+        
+        .card.disabled {
+            background: #222;
+            color: #555;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        /* Modal */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+            overflow: hidden;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            border: 2px solid #b30000;
+            box-shadow: 0 0 20px #ff0000;
+            overflow-y: auto;
+            max-height: 90vh;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .modal-content::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .close {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ff3333;
+        }
+        
+        .close:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #ff0000;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+        }
+        
+        button {
+            background: #330000;
+            color: #fff;
+            border: 2px solid #660000;
+            margin: 0.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+        }
+        
+        button:hover {
+            background: #660000;
+            border-color: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>GhostAim666 - Redstone Tutorials</h1>
+        <p>Cool Minecraft Redstone</p>
+        <a href="https://ko-fi.com/strezcik" target="_blank" class="kofi-btn">☕ Support me on Ko-fi</a>
+    </header>
+
+    <main class="grid">
+        <div class="card" onclick="openSystem(0)">
+            <h2>3x3 Spiral Door</h2>
+        </div>
+        <div class="card" onclick="openSystem(1)">
+            <h2>Tripwire Hook farm</h2>
+        </div>
+        <div class="card" onclick="openSystem(2)">
+            <h2>Regear Station</h2>
+        </div>
+        <div class="card" onclick="openSystem(3)">
+            <h2>Local Bank system</h2>
+        </div>
+        <div class="card disabled">
+            <h2>???</h2>
+        </div>
+        <div class="card disabled">
+            <h2>???</h2>
+        </div>
+        <div class="card disabled">
+            <h2>???</h2>
+        </div>
+        <div class="card disabled">
+            <h2>???</h2>
+        </div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="systemTitle"></h2>
+            <h3>Materials Needed:</h3>
+            <ul id="materialsList"></ul>
+            <h3>Tutorial Video:</h3>
+            <div class="video-container">
+                <iframe id="youtubeVideo" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <h3>Other Systems:</h3>
+            <div id="otherSystems"></div>
+        </div>
+    </div>
+
+    <script>
+        const systems = [{
+            title: "3x3 Spiral Door",
+            materials: ["1 Noteblock", "9 Observers", "10 Sticky Pistons", "11 Redstone Dust", "1 Repeater", "2 Slabs", "3 Powered Rails", "21 Solid Blocks"],
+            youtube: "https://www.youtube.com/embed/M2pC3hD8Cow"
+        }, {
+            title: "Tripwire Hook farm",
+            materials: ["1 Piston", "6 Redstone Dust", "1 Levers", "2 Tripwire Hooks", "1 String", "3 Solid Blocks", "1 Repeater", "1 Redstone Torch", "1 MinecartHopper", "1 Iron Door", "1 Hopper", "1 Chest", "1 Armor Stand"],
+            youtube: "https://www.youtube.com/embed/Yf04c2_qHhI"
+        }, {
+            title: "Regear Station",
+            materials: ["18 Observers", "6 Barrels", "6 Dispensers", "6 Hoppers", "6 Note Blocks", "6 Stone Bricks", "4 Powered Rails", "4 Smooth Stone", "3 Obsidian", "2 Redstone Dust", "2 Redstone Repeaters", "2 Stone Brick Stairs", "1 Lava Bucket", "1 Oak Sign", "1 Slime Block", "1 Sticky Piston", "1 Stone Button"],
+            youtube: "https://www.youtube.com/embed/KGADlQ1c9iA"
+        }, {
+            title: "Local Bank system",
+            materials: ["122 Smooth Stone", "47 Hopper", "40 Observer", "32 Redstone Dust", "24 Dropper", "14 Redstone Comparator", "9 Redstone Torch", "7 Barrel", "7 Sticky Piston", "6 Composter", "6 Redstone Repeater", "5 Target", "4 Smooth Stone Slab", "3 Cobblestone Wall", "3 Iron Trapdoor", "1 Dispenser", "1 Oak Button", "1 Oak Slab", "1 Oak Stairs", "1 Piston", "1 Rail", "1 Stone Button"],
+            youtube: "https://www.youtube.com/embed/2jjAjSF1Tjg"
+        }];
+
+        function openSystem(index) {
+            const system = systems[index];
+            document.getElementById("systemTitle").textContent = system.title;
+            const materialsList = document.getElementById("materialsList");
+            materialsList.innerHTML = "";
+            system.materials.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                materialsList.appendChild(li);
+            });
+            document.getElementById("youtubeVideo").src = system.youtube;
+            const other = document.getElementById("otherSystems");
+            other.innerHTML = "";
+            systems.forEach((s, i) => {
+                if (i !== index) {
+                    const btn = document.createElement("button");
+                    btn.textContent = s.title;
+                    btn.onclick = () => openSystem(i);
+                    other.appendChild(btn);
+                }
+            });
+            const modal = document.getElementById("modal");
+            modal.style.display = "flex";
+            setTimeout(() => modal.classList.add("show"), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("modal");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+                document.getElementById("youtubeVideo").src = "";
+            }, 500);
+        }
+
+        // Close modal when clicking outside content
+        document.getElementById("modal").addEventListener("click", function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
